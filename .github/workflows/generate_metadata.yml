@@ -1,1 +1,27 @@
+name: Generate SDG Metadata
 
+on:
+  push:
+    branches:
+      - main  # Trigger on push to the main branch
+  workflow_dispatch:  # Allows manual trigger from GitHub Actions UI
+
+jobs:
+  generate_metadata:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Install Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.10"
+
+      - name: Install Dependencies
+        run: pip install django pyyaml
+
+      - name: Run Django Commands
+        run: |
+          python manage.py makemigrations
+          python manage.py migrate
