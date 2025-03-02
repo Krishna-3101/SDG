@@ -1,0 +1,42 @@
+name: Generate SDG Metadata
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  generate_metadata:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Install Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.10"
+
+      - name: Install Dependencies
+        run: pip install django pyyaml
+
+      - name: Run Django Commands
+        run: |
+          python manage.py makemigrations
+          python manage.py migrate
+
+      - name: Generate SDG Metadata
+        run: |
+          python manage.py generate_metadata  # Custom management command to generate metadata
+      
+      - name: Commit and Push Metadata
+        run: |
+          git config --global user.name 'Your Name'
+          git config --global user.email 'your_email@example.com'
+          git add sdg_metadata.yml sdg_metadata.json
+          git commit -m "Add generated SDG metadata"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+

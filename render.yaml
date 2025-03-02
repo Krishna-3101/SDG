@@ -4,10 +4,9 @@ services:
     env: python
     pythonVersion: 3.10.10  # Specify the correct Python version
     buildCommand: |
-      pip install -r requirements.txt  # Install dependencies
+      pip install --no-cache-dir -r requirements.txt  # Install dependencies without cache
     startCommand: |
-      python manage.py migrate  # Apply migrations
-      python manage.py runserver 0.0.0.0:10000  # Start the server
+      python manage.py migrate && gunicorn sdg_project.wsgi:application --bind 0.0.0.0:$PORT  # Start the app
     envVars:
       - key: DJANGO_SECRET_KEY
         value: django-insecure-x6e$o5+4390vgolzunrv=@=sska6-wtn128jgzfcc@1#4gq#_x

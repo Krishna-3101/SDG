@@ -1,0 +1,37 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Results</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h2>🔍 Search for SDG Projects</h2>
+
+        <form method="GET" action="{% url 'search_projects' %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Search</button>
+        </form>
+
+        <h3>Results</h3>
+        {% if projects %}
+            <ul class="project-list">
+                {% for project in projects %}
+                    <li>
+                        <h4>{{ project.project_name }}</h4>
+                        <p>{{ project.description }}</p>
+                        <p><strong>SDG Targets:</strong> {{ project.sdg_targets }}</p>
+                        <a class="download-link" href="{% url 'search_projects' %}?download=true&query={{ form.cleaned_data.query }}">
+                            ⬇️ Download YAML
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No projects found.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
